@@ -33,9 +33,9 @@ function makeWork(arrOfArr, func) {
   let max = 0;
 
   for (let i = 0; i < arrOfArr.length; i++) {
-    func(arrOfArr[i]);
-      if (func(arrOfArr[i]) > max) {
-        max = func(arrOfArr[i]);
+    const funcResult = func(arrOfArr[i]);
+      if (funcResult > max) {
+        max = funcResult;
       }
     }
   return max;
