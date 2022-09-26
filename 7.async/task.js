@@ -7,10 +7,12 @@ class AlarmClock{
     addClock(time, callback, id){
         if(!id){
             throw new Error ("Параметр 'id' не передан");
-        } else if(this.alarmCollection.find(clock => clock.id === id)){
-            return console.error("Будильник с таким 'id' уже существует");
+        } else if(this.alarmCollection.some(clock => clock.id === id)){
+            console.error("Будильник с таким 'id' уже существует");
+            return
         }
-        return this. alarmCollection.push({id, time, callback});
+        
+        this. alarmCollection.push({time, callback, id});
     }
 
     removeClock(id){
@@ -25,34 +27,34 @@ class AlarmClock{
     }
 
     start(){
-        let checkClock = function(clock){
-            let timeAlarm = getCurrentFormattedTime();
-            if(clock.time === timeAlarm){
+        if(this.timerId){
+            return;
+        }
+
+        const checkClock = (clock) => {
+            if(clock.time === this.getCurrentFormattedTime){
                 return clock.callback();
             }
         }
-
-        if (this.timerId === null) {
-            this.timerId = setInterval(() => {
-                this.alarmCollection.forEach(clock => checkClock(clock));
+        
+        this.timerId = setInterval(() => {
+                this.alarmCollection.forEach(checkClock);
             }, 1000);
-        }
-        return;
-        }
+    }
 
         stop(){
-            if(this.timerId !== null){
+            if(this.timerId){
                 clearInterval(this.timerId);
                 this.timerId = null;
             }
         }
 
         printAlarms(){
-            this.alarmCollection.forEach(clock => console.log('Будильник № ${clock.id} заведен на ${clock.time}'));
+            this.alarmCollection.forEach(clock => console.log(`Будильник № ${clock.id} заведен на ${clock.time}`));
         }
 
         clearAlarms(){
-            this.stop;
+            this.stop();
             this.alarmCollection = [];
         }
 }
